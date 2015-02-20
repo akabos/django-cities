@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 from django.utils.encoding import force_text
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
-from conf import settings
-from util import create_model, un_camel
+from .conf import settings
+from .util import create_model, un_camel
 
 __all__ = [
         'Point', 'Country', 'Region', 'Subregion',
