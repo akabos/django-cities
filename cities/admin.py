@@ -1,5 +1,6 @@
+from __future__ import absolute_import
 from django.contrib import admin
-from models import *
+from .models import *
 
 class CountryAdmin(admin.ModelAdmin):
     list_display = ['name', 'code', 'tld', 'population']
