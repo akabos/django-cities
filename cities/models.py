@@ -1,4 +1,4 @@
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 from conf import settings
@@ -6,7 +6,7 @@ from util import create_model, un_camel
 
 __all__ = [
         'Point', 'Country', 'Region', 'Subregion',
-        'City', 'District', 'PostalCode', 'geo_alt_names', 
+        'City', 'District', 'PostalCode', 'geo_alt_names',
 ]
 
 class Place(models.Model):
@@ -43,7 +43,7 @@ class Country(Place):
         return None
 
     def __unicode__(self):
-        return force_unicode(self.name)
+        return force_text(self.name)
 
 class RegionBase(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
@@ -56,7 +56,7 @@ class RegionBase(Place):
         abstract = True
 
     def __unicode__(self):
-        return u'{0}, {1}'.format(force_unicode(self.name_std), self.parent)
+        return u'{0}, {1}'.format(force_text(self.name_std), self.parent)
 
 class Region(RegionBase):
     @property
@@ -76,10 +76,10 @@ class CityBase(Place):
     population = models.IntegerField()
 
     class Meta:
-        abstract = True 
+        abstract = True
 
     def __unicode__(self):
-        return u'{0}, {1}'.format(force_unicode(self.name_std), self.parent)
+        return u'{0}, {1}'.format(force_text(self.name_std), self.parent)
 
 class City(CityBase):
     region = models.ForeignKey(Region, null=True, blank=True)
@@ -125,7 +125,7 @@ def create_geo_alt_names(geo_type):
                 'is_preferred': models.BooleanField(),                          # True if this alternate name is an official / preferred name
                 'is_short': models.BooleanField(),                              # True if this is a short name like 'California' for 'State of California'
                 'objects': GeoAltNameManager(),
-                '__unicode__': lambda self: force_unicode(self.name),
+                '__unicode__': lambda self: force_text(self.name),
             },
             app_label = 'cities',
             module = 'cities.models',
@@ -164,17 +164,17 @@ class PostalCode(Place):
     @property
     def name_full(self):
         """Get full name including hierarchy"""
-        return u', '.join(reversed(self.names)) 
+        return u', '.join(reversed(self.names))
     @property
     def names(self):
         """Get a hierarchy of non-null names, root first"""
         return [e for e in [
-            force_unicode(self.country),
-            force_unicode(self.region_name),
-            force_unicode(self.subregion_name),
-            force_unicode(self.district_name),
-            force_unicode(self.name),
+            force_text(self.country),
+            force_text(self.region_name),
+            force_text(self.subregion_name),
+            force_text(self.district_name),
+            force_text(self.name),
         ] if e]
 
     def __unicode__(self):
-        return force_unicode(self.code)
+        return force_text(self.code)
